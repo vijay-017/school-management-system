@@ -1,4 +1,11 @@
+package com.backend.backend.services;
 
+import com.backend.backend.entity.Attendance;
+import com.backend.backend.repository.AttendanceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AttendanceService{
@@ -7,33 +14,34 @@ public class AttendanceService{
     private AttendanceRepository attendanceRepository;
 
     //get attendance by Id
-    Attendance getById(Long id){
+    public Attendance getById(Long id){
         return attendanceRepository.findById(id).orElse(null);
     }
 
     //get all attendances
-    List<Attendance> getAllAttendances(){
+    public List<Attendance> getAllAttendances(){
         return attendanceRepository.findAll();
     }
 
     //create new attendance
-    Attendance createAttendance(Attendance newAttendance){
+    public Attendance createAttendance(Attendance newAttendance){
         return attendanceRepository.save(newAttendance);
     }
 
     //update existing attendance
-    Attendance updateAttendance(Long id, Attendance updatedAttendance){
+    public Attendance updateAttendance(Long id, Attendance updatedAttendance){
         Attendance existingAttendance = attendanceRepository.findById(id).orElse(null);
-        if(existingAttendance){
+        if(existingAttendance != null){
             existingAttendance.setDate(updatedAttendance.getDate());
             existingAttendance.setStatus(updatedAttendance.getStatus());
             existingAttendance.setStudent(updatedAttendance.getStudent());
             return attendanceRepository.save(existingAttendance);
         }
+        return null;
     }
 
     //delete attendance
-    void deleteAttendance(Long id){
+    public void deleteAttendance(Long id){
         attendanceRepository.deleteById(id);
     }
 

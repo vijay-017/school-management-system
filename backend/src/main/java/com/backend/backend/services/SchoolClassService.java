@@ -1,3 +1,11 @@
+package com.backend.backend.services;
+
+import com.backend.backend.entity.SchoolClass;
+import com.backend.backend.repository.SchoolClassRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SchoolClassService{
@@ -6,32 +14,34 @@ public class SchoolClassService{
     private SchoolClassRepository schoolClassRepository;
 
     //get school class by Id
-    SchoolClass getById(Long id){
+    public SchoolClass getById(Long id){
         return schoolClassRepository.findById(id).orElse(null);
     }
 
     //get all school classes
-    List<SchoolClass> getAllSchoolClasses(){
+    public List<SchoolClass> getAllSchoolClasses(){
         return schoolClassRepository.findAll();
     }
 
     //create new school class
-    SchoolClass createSchoolClass(SchoolClass newSchoolClass){
+    public SchoolClass createSchoolClass(SchoolClass newSchoolClass){
         return schoolClassRepository.save(newSchoolClass);
     }
 
     //update existing school class
-    SchoolClass updateSchoolClass(Long id, SchoolClass updatedSchoolClass){
+    public SchoolClass updateSchoolClass(Long id, SchoolClass updatedSchoolClass){
         SchoolClass existingSchoolClass = schoolClassRepository.findById(id).orElse(null);
-        if(existingSchoolClass){
+        if(existingSchoolClass != null){
             existingSchoolClass.setClassName(updatedSchoolClass.getClassName());
-            existingSchoolClass.setTeacher(updatedSchoolClass.getTeacher());
+            existingSchoolClass.setSection(updatedSchoolClass.getSection());
+            existingSchoolClass.setClassTeacher(updatedSchoolClass.getClassTeacher());
             return schoolClassRepository.save(existingSchoolClass);
         }
+        return null;
     }
 
     //delete school class
-    void deleteSchoolClass(Long id){
+    public void deleteSchoolClass(Long id){
         schoolClassRepository.deleteById(id);
     }
     

@@ -1,3 +1,11 @@
+package com.backend.backend.controller;
+
+import com.backend.backend.entity.Subject;
+import com.backend.backend.services.SubjectService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class SubjectController{

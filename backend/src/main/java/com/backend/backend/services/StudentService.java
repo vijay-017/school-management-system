@@ -1,3 +1,11 @@
+package com.backend.backend.services;
+
+import com.backend.backend.entity.Student;
+import com.backend.backend.repository.StudentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class StudentService {
@@ -6,26 +14,27 @@ public class StudentService {
     private StudentRepository studentRepository;
 
     //get student by Id
-    Student getById(Long id){
+    public Student getById(Long id){
         return studentRepository.findById(id).orElse(null);
     }
 
     //get all students
-    List<Student> getAllStudents(){
+    public List<Student> getAllStudents(){
         return studentRepository.findAll();
     }
 
     //create new student
-    Student createStudent(Student newStudent){
+    public Student createStudent(Student newStudent){
         return studentRepository.save(newStudent);
     }
 
     //update existing student
-    Student updateStudent(Long id, Student){
+    public Student updateStudent(Long id, Student updatedStudent){
         Student existingStudent = studentRepository.findById(id).orElse(null);
-        if(existingStudent){
-            existingStudent.setName(updatedStudent.getName());
+        if(existingStudent != null){
             existingStudent.setRollNumber(updatedStudent.getRollNumber());
+            existingStudent.setFirstName(updatedStudent.getFirstName());
+            existingStudent.setLastName(updatedStudent.getLastName());
             existingStudent.setGender(updatedStudent.getGender());
             existingStudent.setDateOfBirth(updatedStudent.getDateOfBirth());
             existingStudent.setPhone(updatedStudent.getPhone());
@@ -34,10 +43,11 @@ public class StudentService {
             existingStudent.setAdmissionDate(updatedStudent.getAdmissionDate());
             return studentRepository.save(existingStudent);
         }
+        return null;
     }
 
     //delete student
-    void deleteStudent(Long id){
+    public void deleteStudent(Long id){
         studentRepository.deleteById(id);
     }
 

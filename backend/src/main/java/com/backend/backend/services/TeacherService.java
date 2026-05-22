@@ -1,4 +1,11 @@
+package com.backend.backend.services;
 
+import com.backend.backend.entity.Teacher;
+import com.backend.backend.repository.TeacherRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TeacherService{
@@ -7,38 +14,39 @@ public class TeacherService{
     private TeacherRepository teacherRepository;
 
     //get teacher by Id
-    Teacher getById(Long id){
+    public Teacher getById(Long id){
         return teacherRepository.findById(id).orElse(null);
     }
 
     //get all teachers
-    List<Teacher> getAllTeachers(){
+    public List<Teacher> getAllTeachers(){
         return teacherRepository.findAll();
     }
 
     //create new teacher
-    Teacher createTeacher(Teacher newTeacher){
+    public Teacher createTeacher(Teacher newTeacher){
         return teacherRepository.save(newTeacher);
     }
 
     //update existing teacher
-    Teacher updateTeacher(Long id, Teacher updatedTeacher){
+    public Teacher updateTeacher(Long id, Teacher updatedTeacher){
         Teacher existingTeacher = teacherRepository.findById(id).orElse(null);
-        if(existingTeacher){
-            existingTeacher.setName(updatedTeacher.getName());
+        if(existingTeacher != null){
             existingTeacher.setEmployeeId(updatedTeacher.getEmployeeId());
-            existingTeacher.setGender(updatedTeacher.getGender());
-            existingTeacher.setDateOfBirth(updatedTeacher.getDateOfBirth());
+            existingTeacher.setFirstName(updatedTeacher.getFirstName());
+            existingTeacher.setLastName(updatedTeacher.getLastName());
+            existingTeacher.setQualification(updatedTeacher.getQualification());
+            existingTeacher.setExperienceYears(updatedTeacher.getExperienceYears());
             existingTeacher.setPhone(updatedTeacher.getPhone());
-            existingTeacher.setAddress(updatedTeacher.getAddress());
-            existingTeacher.setSubject(updatedTeacher.getSubject());
-            existingTeacher.setJoiningDate(updatedTeacher.getJoiningDate());
+            existingTeacher.setHireDate(updatedTeacher.getHireDate());
+            existingTeacher.setUser(updatedTeacher.getUser());
             return teacherRepository.save(existingTeacher);
         }
+        return null;
     }
 
     //delete teacher
-    void deleteTeacher(Long id){
+    public void deleteTeacher(Long id){
         teacherRepository.deleteById(id);
     }
 
