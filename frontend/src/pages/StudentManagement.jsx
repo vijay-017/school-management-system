@@ -2,28 +2,68 @@ import React, { useState, useEffect } from 'react';
 import FloatingCard from '../components/FloatingCard';
 import { Search, Plus, Filter, MoreVertical, Edit2, Trash2, Mail } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
+import axios from 'axios';
 
 const StudentManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    anime({
-      targets: '.student-row',
-      opacity: [0, 1],
-      translateX: [-20, 0],
-      delay: anime.stagger(50),
-      easing: 'easeOutExpo',
-      duration: 800
-    });
+    axios.get("http://localhost:9090/student")
+      .then((res) => {
+        setStudents(res.data);
+        setLoading(false);
+        
+      })
+      .catch((err) => {
+        console.error("Error fetching students:", err);
+        setLoading(false);
+      });
   }, []);
 
-  const students = [
-    { id: 'ST-001', name: 'Nova Skye', grade: '10-A', status: 'Active', parent: 'Luna Skye', email: 'nova@aetheris.edu' },
-    { id: 'ST-002', name: 'Orion Pax', grade: '12-B', status: 'Active', parent: 'Sentinel Pax', email: 'orion@aetheris.edu' },
-    { id: 'ST-003', name: 'Lyra Vance', grade: '9-C', status: 'On Leave', parent: 'Elias Vance', email: 'lyra@aetheris.edu' },
-    { id: 'ST-004', name: 'Atlas Thorne', grade: '11-A', status: 'Active', parent: 'Mila Thorne', email: 'atlas@aetheris.edu' },
-    { id: 'ST-005', name: 'Selene Moon', grade: '10-B', status: 'Active', parent: 'Diana Moon', email: 'selene@aetheris.edu' },
-  ];
+  console.log(students)
+
+  useEffect(() => {
+    if (!loading && students.length > 0) {
+      anime({
+        targets: '.student-row',
+        opacity: [0, 1],
+        translateX: [-20, 0],
+        delay: anime.stagger(50),
+        easing: 'easeOutExpo',
+        duration: 800
+      });
+    }
+  }, [loading, students]);
+
+  const getStudentDisplay = (student) => {
+    const id = student.rollNumber || `ST-${String(student.id).padStart(3, '0')}`;
+    const name = `${student.firstName || ''} ${student.lastName || ''}`.trim() || 'Unknown';
+    const grade = student.schoolClass ? `${student.schoolClass.className}-${student.schoolClass.section}` : 'N/A';
+    const email = student.user?.email || 'N/A';
+    const status = student.user?.isActive ? 'Present' : 'On Leave';
+    const parent = student.parent || 'Luna Skye';
+    return {
+      ...student,
+      displayId: id,
+      displayName: name,
+      displayGrade: grade,
+      displayEmail: email,
+      displayStatus: status,
+      displayParent: parent
+    };
+  };
+
+  const displayedStudents = students.map(getStudentDisplay).filter((student) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      student.displayId.toLowerCase().includes(term) ||
+      student.displayName.toLowerCase().includes(term) ||
+      student.displayGrade.toLowerCase().includes(term) ||
+      student.displayEmail.toLowerCase().includes(term)
+    );
+  });
 
   return (
     <div className="p-8">
@@ -68,38 +108,55 @@ const StudentManagement = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {students.map((student) => (
-              <tr key={student.id} className="student-row hover:bg-white/5 transition-colors group cursor-pointer">
-                <td className="px-6 py-4 font-mono text-neon-cyan text-sm text-center">{student.id}</td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-blue flex items-center justify-center text-space-950 font-bold">
-                      {student.name[0]}
-                    </div>
-                    <div>
-                      <div className="text-white font-medium group-hover:text-neon-cyan transition-colors">{student.name}</div>
-                      <div className="text-xs text-slate-500">{student.email}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-slate-300 text-sm text-center font-semibold">{student.grade}</td>
-                <td className="px-6 py-4 text-slate-400 text-sm">{student.parent}</td>
-                <td className="px-6 py-4 text-center">
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                    student.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
-                  }`}>
-                    {student.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button className="p-2 hover:text-neon-cyan transition-colors" title="Message"><Mail size={18} /></button>
-                    <button className="p-2 hover:text-neon-blue transition-colors" title="Edit"><Edit2 size={18} /></button>
-                    <button className="p-2 hover:text-red-400 transition-colors" title="Delete"><Trash2 size={18} /></button>
+            {loading ? (
+              <tr>
+                <td colSpan="6" className="text-center py-8 text-slate-500">
+                  <div className="flex justify-center items-center gap-2">
+                    <div className="w-5 h-5 rounded-full border-2 border-neon-cyan border-t-transparent animate-spin"></div>
+                    Loading student directory...
                   </div>
                 </td>
               </tr>
-            ))}
+            ) : displayedStudents.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="text-center py-8 text-slate-500">
+                  No students found.
+                </td>
+              </tr>
+            ) : (
+              displayedStudents.map((student) => (
+                <tr key={student.id} className="student-row hover:bg-white/5 transition-colors group cursor-pointer">
+                  <td className="px-6 py-4 font-mono text-neon-cyan text-sm text-center">{student.displayId}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-neon-cyan to-neon-blue flex items-center justify-center text-space-950 font-bold">
+                        {student.displayName[0]}
+                      </div>
+                      <div>
+                        <div className="text-white font-medium group-hover:text-neon-cyan transition-colors">{student.displayName}</div>
+                        <div className="text-xs text-slate-500">{student.displayEmail}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-slate-300 text-sm text-center font-semibold">{student.displayGrade}</td>
+                  <td className="px-6 py-4 text-slate-400 text-sm">{student.displayParent}</td>
+                  <td className="px-6 py-4 text-center">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                      student.displayStatus === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20'
+                    }`}>
+                      {student.displayStatus}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button className="p-2 hover:text-neon-cyan transition-colors" title="Message"><Mail size={18} /></button>
+                      <button className="p-2 hover:text-neon-blue transition-colors" title="Edit"><Edit2 size={18} /></button>
+                      <button className="p-2 hover:text-red-400 transition-colors" title="Delete"><Trash2 size={18} /></button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </FloatingCard>

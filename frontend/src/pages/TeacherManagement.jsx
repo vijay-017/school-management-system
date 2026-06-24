@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import FloatingCard from '../components/FloatingCard';
 import { Mail, Phone, Book, MoreHorizontal } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
+import axios from 'axios';
 
 const TeacherCard = ({ name, subject, contact, image, delay }) => (
   <FloatingCard className="flex flex-col items-center text-center p-8 group hover:scale-[1.05] transition-all duration-500" delay={delay}>
@@ -41,55 +42,91 @@ const TeacherCard = ({ name, subject, contact, image, delay }) => (
 );
 
 const TeacherManagement = () => {
+  const [teachers, setTeachers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    anime({
-      targets: '.teacher-card',
-      opacity: [0, 1],
-      scale: [0.9, 1],
-      translateY: [20, 0],
-      delay: anime.stagger(100),
-      easing: 'easeOutExpo',
-      duration: 1000
-    });
+    axios.get("http://localhost:9090/teacher")
+      .then((res) => {
+        setTeachers(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching teachers:", err);
+        setLoading(false);
+      });
   }, []);
 
-  const teachers = [
-    { name: 'Dr. Alaric Chen', subject: 'Quantum Physics', contact: { email: 'alaric@aetheris.edu', phone: '+1 234 567 890' }, image: 'https://i.pravatar.cc/150?u=alaric' },
-    { name: 'Prof. Sarah Vance', subject: 'Advanced Mathematics', contact: { email: 'sarah@aetheris.edu', phone: '+1 234 567 891' }, image: 'https://i.pravatar.cc/150?u=sarah' },
-    { name: 'Elena Rodriguez', subject: 'Astro-Biology', contact: { email: 'elena@aetheris.edu', phone: '+1 234 567 892' }, image: 'https://i.pravatar.cc/150?u=elena' },
-    { name: 'James Sterling', subject: 'Cyber Ethics', contact: { email: 'james@aetheris.edu', phone: '+1 234 567 893' }, image: 'https://i.pravatar.cc/150?u=james' },
-    { name: 'Maya Kotto', subject: 'Galactic History', contact: { email: 'maya@aetheris.edu', phone: '+1 234 567 894' }, image: 'https://i.pravatar.cc/150?u=maya' },
-    { name: 'Viktor Drago', subject: 'Physical Training', contact: { email: 'viktor@aetheris.edu', phone: '+1 234 567 895' }, image: 'https://i.pravatar.cc/150?u=viktor' },
-  ];
+  useEffect(() => {
+    if (!loading && teachers.length > 0) {
+      anime({
+        targets: '.teacher-card',
+        opacity: [0, 1],
+        scale: [0.9, 1],
+        translateY: [20, 0],
+        delay: anime.stagger(100),
+        easing: 'easeOutExpo',
+        duration: 1000
+      });
+    }
+  }, [loading, teachers]);
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-end mb-10">
         <div>
           <h1 className="text-3xl font-bold text-white mb-2">Faculty Council</h1>
-          <p className="text-slate-400">Reviewing performance and assignments of 86 academic staff members.</p>
+          <p className="text-slate-400">Reviewing performance and assignments of academic staff members.</p>
         </div>
         <div className="flex gap-4">
           <div className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-8">
             <div className="text-center">
               <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Active</p>
-              <p className="text-xl font-bold text-emerald-400">82</p>
+              <p className="text-xl font-bold text-emerald-400">
+                {loading ? '...' : teachers.filter(t => t.user?.isActive).length}
+              </p>
             </div>
             <div className="w-[1px] h-8 bg-white/10"></div>
             <div className="text-center">
               <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">On Leave</p>
-              <p className="text-xl font-bold text-yellow-400">4</p>
+              <p className="text-xl font-bold text-yellow-400">
+                {loading ? '...' : teachers.filter(t => !t.user?.isActive).length}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {teachers.map((teacher, i) => (
-          <div key={i} className="teacher-card">
-            <TeacherCard {...teacher} delay={i * 0.2} />
+        {loading ? (
+          <div className="col-span-full text-center py-12 text-slate-500">
+            <div className="flex justify-center items-center gap-2">
+              <div className="w-5 h-5 rounded-full border-2 border-neon-cyan border-t-transparent animate-spin"></div>
+              Loading faculty directory...
+            </div>
           </div>
-        ))}
+        ) : teachers.length === 0 ? (
+          <div className="col-span-full text-center py-12 text-slate-500">
+            No faculty members found.
+          </div>
+        ) : (
+          teachers.map((teacher, i) => {
+            const displayTeacher = {
+              name: `${teacher.firstName || ''} ${teacher.lastName || ''}`.trim() || 'Unknown Faculty',
+              subject: teacher.qualification || 'Academics',
+              contact: {
+                email: teacher.user?.email || 'N/A',
+                phone: teacher.phone || 'N/A'
+              },
+              image: `https://i.pravatar.cc/150?u=${teacher.employeeId || teacher.id}`
+            };
+            return (
+              <div key={teacher.id || i} className="teacher-card">
+                <TeacherCard {...displayTeacher} delay={i * 0.2} />
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );

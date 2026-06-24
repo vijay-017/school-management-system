@@ -15,8 +15,8 @@ public class StudentController{
 
     //get student by Id
     @GetMapping("/student/{id}")
-    public Student getStudentById(@PathVariable Long id){
-        return studentService.getById(id);
+    public Student getByRollNumber(@PathVariable String id){
+        return studentService.getByRollNumber(id);
     }
 
     //get all students

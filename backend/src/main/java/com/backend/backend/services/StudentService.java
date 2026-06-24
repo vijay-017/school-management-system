@@ -13,9 +13,14 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
-    //get student by Id
-    public Student getById(Long id){
+    //
+    public Student getBId(Long id){
         return studentRepository.findById(id).orElse(null);
+    }
+
+    //get student by Id
+    public Student getByRollNumber(String id){
+        return studentRepository.findByRollNumber(id).orElse(null);
     }
 
     //get all students

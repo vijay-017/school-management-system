@@ -68,7 +68,7 @@ const LoginPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-400 mb-2">Security Key</label>
+            <label className="block text-sm font-medium text-slate-400 mb-2">Password</label>
             <input
               type="password"
               placeholder="••••••••"

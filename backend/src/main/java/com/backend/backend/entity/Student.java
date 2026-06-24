@@ -26,7 +26,9 @@ public class Student {
     @Column(nullable = false, unique = true)
     private String rollNumber;
 
+    @Column(nullable = false)
     private String firstName;
+
     private String lastName;
     private String gender;
     private LocalDate dateOfBirth;
