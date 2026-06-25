@@ -14,9 +14,9 @@ public class TeacherController{
     private TeacherService teacherService;
 
     //get teacher by Id
-    @GetMapping("/teacher/{id}")
-    public Teacher getTeacherById(@PathVariable Long id){
-        return teacherService.getById(id);
+    @GetMapping("/teacher/{employeeId}")
+    public Teacher getTeacherById(@PathVariable String employeeId){
+        return teacherService.getByEmployeeId(employeeId);
     }
 
     //get all teachers
@@ -32,15 +32,15 @@ public class TeacherController{
     }
 
     //update existing teacher
-    @PutMapping("/teacher/{id}")
-    public Teacher updateTeacher(@PathVariable Long id, @RequestBody Teacher teacher){
-        return teacherService.updateTeacher(id, teacher);
+    @PutMapping("/teacher/{employeeId}")
+    public Teacher updateTeacher(@PathVariable String employeeId, @RequestBody Teacher teacher){
+        return teacherService.updateTeacher(employeeId, teacher);
     }
 
     //delete teacher
-    @DeleteMapping("/teacher/{id}")
-    public void deleteTeacher(@PathVariable Long id){
-        teacherService.deleteTeacher(id);
+    @DeleteMapping("/teacher/{employeeId}")
+    public void deleteTeacher(@PathVariable String employeeId){
+        teacherService.deleteTeacher(employeeId);
     }
 
 }
