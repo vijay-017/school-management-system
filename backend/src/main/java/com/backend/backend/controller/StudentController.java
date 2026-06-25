@@ -14,9 +14,9 @@ public class StudentController{
     private StudentService studentService;
 
     //get student by Id
-    @GetMapping("/student/{id}")
-    public Student getByRollNumber(@PathVariable String id){
-        return studentService.getByRollNumber(id);
+    @GetMapping("/student/{rollNumber}")
+    public Student getByRollNumber(@PathVariable String rollNumber){
+        return studentService.getByRollNumber(rollNumber);
     }
 
     //get all students
@@ -32,15 +32,15 @@ public class StudentController{
     }
 
     //update existing student
-    @PutMapping("/student/{id}")
-    public Student updateStudent(@PathVariable Long id, @RequestBody Student student){
-        return studentService.updateStudent(id, student);
+    @PutMapping("/student/{rollNumber}")
+    public Student updateStudent(@PathVariable String rollNumber, @RequestBody Student student){
+        return studentService.updateStudent(rollNumber, student);
     }
 
     //delete student
-    @DeleteMapping("/student/{id}")
-    public void deleteStudent(@PathVariable Long id){
-        studentService.deleteStudent(id);
+    @DeleteMapping("/student/{rollNumber}")
+    public Student deleteStudent(@PathVariable String rollNumber){
+        return studentService.deleteStudent(rollNumber);
     }
 
 }

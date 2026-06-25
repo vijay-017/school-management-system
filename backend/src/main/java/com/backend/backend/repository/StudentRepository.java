@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Optional<Student> findByRollNumber(String roll_number);
+
+    void deleteByRollNumber(String roll_number);
 }

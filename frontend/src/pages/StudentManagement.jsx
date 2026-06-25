@@ -14,16 +14,14 @@ const StudentManagement = () => {
       .then((res) => {
         setStudents(res.data);
         setLoading(false);
-        
+       
       })
       .catch((err) => {
         console.error("Error fetching students:", err);
         setLoading(false);
       });
   }, []);
-
-  console.log(students)
-
+   console.log(students)
   useEffect(() => {
     if (!loading && students.length > 0) {
       anime({
@@ -41,7 +39,6 @@ const StudentManagement = () => {
     const id = student.rollNumber || `ST-${String(student.id).padStart(3, '0')}`;
     const name = `${student.firstName || ''} ${student.lastName || ''}`.trim() || 'Unknown';
     const grade = student.schoolClass ? `${student.schoolClass.className}-${student.schoolClass.section}` : 'N/A';
-    const email = student.user?.email || 'N/A';
     const status = student.user?.isActive ? 'Present' : 'On Leave';
     const parent = student.parent || 'Luna Skye';
     return {
@@ -49,7 +46,6 @@ const StudentManagement = () => {
       displayId: id,
       displayName: name,
       displayGrade: grade,
-      displayEmail: email,
       displayStatus: status,
       displayParent: parent
     };

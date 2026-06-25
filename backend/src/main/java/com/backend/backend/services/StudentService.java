@@ -1,9 +1,12 @@
 package com.backend.backend.services;
 
 import com.backend.backend.entity.Student;
+import com.backend.backend.entity.User;
 import com.backend.backend.repository.StudentRepository;
+import com.backend.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,14 +16,13 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
-    //
-    public Student getBId(Long id){
-        return studentRepository.findById(id).orElse(null);
-    }
+    @Autowired
+    private UserRepository userRepository;
 
-    //get student by Id
-    public Student getByRollNumber(String id){
-        return studentRepository.findByRollNumber(id).orElse(null);
+    //get student by RollNumber
+    public Student getByRollNumber(String rollNumber){
+        return studentRepository.findByRollNumber(rollNumber)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
     }
 
     //get all students
@@ -34,8 +36,8 @@ public class StudentService {
     }
 
     //update existing student
-    public Student updateStudent(Long id, Student updatedStudent){
-        Student existingStudent = studentRepository.findById(id).orElse(null);
+    public Student updateStudent(String rollNumber, Student updatedStudent){
+        Student existingStudent = studentRepository.findByRollNumber(rollNumber).orElse(null);
         if(existingStudent != null){
             existingStudent.setRollNumber(updatedStudent.getRollNumber());
             existingStudent.setFirstName(updatedStudent.getFirstName());
@@ -52,8 +54,21 @@ public class StudentService {
     }
 
     //delete student
-    public void deleteStudent(Long id){
-        studentRepository.deleteById(id);
+    @Transactional
+    public Student deleteStudent(String rollNumber) {
+
+        Student student = studentRepository.findByRollNumber(rollNumber)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        User user = student.getUser();
+
+        studentRepository.deleteByRollNumber(rollNumber);
+
+        if (user != null) {
+            userRepository.delete(user);
+        }
+
+        return student;
     }
 
 }

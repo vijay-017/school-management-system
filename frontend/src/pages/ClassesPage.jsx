@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import FloatingCard from '../components/FloatingCard';
 import { BookOpen, Users, Clock, ArrowRight, Layers, LayoutGrid } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
+import axios from 'axios';
 
 const ClassCard = ({ grade, section, students, teacher, subjects, delay }) => (
   <FloatingCard className="group hover:border-neon-violet/50 transition-all duration-500" delay={delay}>
@@ -72,6 +73,7 @@ const ClassesPage = () => {
     { grade: '10', section: 'B', students: 31, teacher: 'Ms. Kotto', subjects: ['Lit', 'Bio', 'History'] },
     { grade: '8', section: 'D', students: 34, teacher: 'Mr. Drago', subjects: ['Science', 'Math', 'PE'] },
   ];
+
 
   return (
     <div className="p-8">
