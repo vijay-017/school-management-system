@@ -42,5 +42,9 @@ public class Student {
     private SchoolClass schoolClass;
 
     private LocalDate admissionDate;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    private Parent parent;
     
 }

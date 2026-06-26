@@ -3,6 +3,8 @@ package com.backend.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "parents")
 @Getter
@@ -16,12 +18,23 @@ public class Parent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
+    @Column(nullable = false)
+    private String fatherName;
 
-    private String firstName;
-    private String lastName;
+    @Column(nullable = false)
+    private String motherName;
+
+    @Column(nullable = false)
     private String phone;
+
+    @Column(unique = true)
+    private String email;
+
     private String occupation;
+
+    @Column(columnDefinition = "TEXT")
+    private String address;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Student> students;
 }
