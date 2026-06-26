@@ -15,7 +15,8 @@ public class SubjectService{
 
     //get subject by Id
     public Subject getById(Long id){
-        return subjectRepository.findById(id).orElse(null);
+        return subjectRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Subject not Found"));
     }
 
     //get all subjects
@@ -30,7 +31,8 @@ public class SubjectService{
 
     //update existing subject
     public Subject updateSubject(Long id, Subject updatedSubject){
-        Subject existingSubject = subjectRepository.findById(id).orElse(null);
+        Subject existingSubject = subjectRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Subject not Found"));
         if(existingSubject != null){
             existingSubject.setSubjectName(updatedSubject.getSubjectName());
             existingSubject.setSubjectCode(updatedSubject.getSubjectCode());

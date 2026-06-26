@@ -2,6 +2,7 @@ package com.backend.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.*;
 
 @Entity
 @Table(name = "subjects")
@@ -21,4 +22,16 @@ public class Subject {
 
     @Column(unique = true)
     private String subjectCode;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher teacher;
+
+    @ManyToMany
+    @JoinTable(
+            name = "class_subject",
+            joinColumns = @JoinColumn(name = "class_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private List<Subject> subjects;
 }
