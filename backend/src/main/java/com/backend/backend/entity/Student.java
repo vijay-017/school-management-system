@@ -1,6 +1,7 @@
 package com.backend.backend.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,12 +40,14 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "class_id")
+    @JsonIgnoreProperties({"classTeacher", "students"})
     private SchoolClass schoolClass;
 
     private LocalDate admissionDate;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
+    @JsonIgnoreProperties("students")
     private Parent parent;
     
 }

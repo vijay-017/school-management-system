@@ -6,7 +6,18 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "attendance")
+@Table(
+        name = "attendance",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        columnNames = {
+                                "attendance_date",
+                                "session",
+                                "student_id"
+                        }
+                )
+        }
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,11 +29,19 @@ public class Attendance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "attendance_date", nullable = false)
+    private LocalDate attendanceDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AttendanceStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AttendanceSession session;
+
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
 
-    private LocalDate date;
-
-    private String status; // PRESENT, ABSENT
 }

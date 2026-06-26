@@ -1,5 +1,6 @@
 package com.backend.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,5 +37,6 @@ public class Parent {
     private String address;
 
     @OneToMany(mappedBy = "parent")
+    @JsonIgnoreProperties("parent")
     private List<Student> students;
 }
