@@ -4,6 +4,7 @@ import com.backend.backend.entity.SchoolClass;
 import com.backend.backend.services.SchoolClassService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class SchoolClassController{
 
     @Autowired
     private SchoolClassService schoolClassService;
+
 
     //get school class by Id
     @GetMapping("/school-class/{id}")
