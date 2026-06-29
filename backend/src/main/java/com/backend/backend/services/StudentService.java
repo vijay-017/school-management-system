@@ -1,9 +1,7 @@
 package com.backend.backend.services;
 
 import com.backend.backend.entity.Student;
-import com.backend.backend.entity.User;
 import com.backend.backend.repository.StudentRepository;
-import com.backend.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +13,6 @@ public class StudentService {
     
     @Autowired
     private StudentRepository studentRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     //get student by RollNumber
     public Student getByRollNumber(String rollNumber){
@@ -60,13 +55,7 @@ public class StudentService {
         Student student = studentRepository.findByRollNumber(rollNumber)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        User user = student.getUser();
-
         studentRepository.deleteByRollNumber(rollNumber);
-
-        if (user != null) {
-            userRepository.delete(user);
-        }
 
         return student;
     }

@@ -13,10 +13,6 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
-
     @Column(nullable = false, unique = true)
     private String rollNumber;
 
@@ -36,7 +32,7 @@ public class Student {
     @JsonIgnoreProperties({"classTeacher", "students"})
     private SchoolClass schoolClass;
 
-    pri LocalDate admissionDate;
+    private LocalDate admissionDate;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
@@ -45,11 +41,10 @@ public class Student {
 
     public Student() {}
 
-    public Student(Long id, User user, String rollNumber, String firstName, String lastName,
+    public Student(Long id, String rollNumber, String firstName, String lastName,
                    String gender, LocalDate dateOfBirth, String phone, String address,
                    SchoolClass schoolClass, LocalDate admissionDate, Parent parent) {
         this.id = id;
-        this.user = user;
         this.rollNumber = rollNumber;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,9 +59,6 @@ public class Student {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
 
     public String getRollNumber() { return rollNumber; }
     public void setRollNumber(String rollNumber) { this.rollNumber = rollNumber; }
@@ -102,7 +94,6 @@ public class Student {
 
     public static class Builder {
         private Long id;
-        private User user;
         private String rollNumber;
         private String firstName;
         private String lastName;
@@ -115,7 +106,6 @@ public class Student {
         private Parent parent;
 
         public Builder id(Long id) { this.id = id; return this; }
-        public Builder user(User user) { this.user = user; return this; }
         public Builder rollNumber(String rollNumber) { this.rollNumber = rollNumber; return this; }
         public Builder firstName(String firstName) { this.firstName = firstName; return this; }
         public Builder lastName(String lastName) { this.lastName = lastName; return this; }
@@ -128,7 +118,7 @@ public class Student {
         public Builder parent(Parent parent) { this.parent = parent; return this; }
 
         public Student build() {
-            return new Student(id, user, rollNumber, firstName, lastName, gender,
+            return new Student(id, rollNumber, firstName, lastName, gender,
                     dateOfBirth, phone, address, schoolClass, admissionDate, parent);
         }
     }

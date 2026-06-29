@@ -45,23 +45,13 @@ class BackendApplicationTests {
 		studentRepository.findByRollNumber("ROLL123").ifPresent(student -> {
 			studentRepository.delete(student);
 		});
-		userRepository.findByUsername("teststudent123").ifPresent(user -> {
-			userRepository.delete(user);
-		});
 
-		User user = User.builder()
-				.username("teststudent123")
-				.password("password")
-				.email("teststudent123@school.com")
-				.role(Role.STUDENT)
-				.build();
-		user = userRepository.save(user);
-
+		// Students no longer have a linked User account (no phones on campus,
+		// only Parents log in). Build the student without any User reference.
 		Student student = Student.builder()
 				.rollNumber("ROLL123")
 				.firstName("Test")
 				.lastName("Student")
-				.user(user)
 				.admissionDate(LocalDate.now())
 				.build();
 		studentRepository.save(student);
@@ -77,9 +67,8 @@ class BackendApplicationTests {
 			fail("Delete failed: " + e.getMessage());
 		}
 
-		// Verify deletion
+		// Verify student record is gone
 		assertNull(studentRepository.findByRollNumber("ROLL123").orElse(null));
-		assertFalse(userRepository.findByUsername("teststudent123").isPresent());
 	}
 
 	@Test
@@ -125,4 +114,3 @@ class BackendApplicationTests {
 		assertFalse(userRepository.findByUsername("testteacher123").isPresent());
 	}
 }
-
