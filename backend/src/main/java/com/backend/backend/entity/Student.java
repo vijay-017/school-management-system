@@ -36,7 +36,7 @@ public class Student {
     @JsonIgnoreProperties({"classTeacher", "students"})
     private SchoolClass schoolClass;
 
-    private LocalDate admissionDate;
+    pri LocalDate admissionDate;
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
